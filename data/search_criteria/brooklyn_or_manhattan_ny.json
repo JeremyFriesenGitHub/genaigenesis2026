@@ -1,0 +1,7 @@
+{
+  "location": "Brooklyn or Manhattan, NY",
+  "intent": "rent",
+  "price_max": 3000,
+  "beds_min": 1,
+  "baths_min": ""
+}

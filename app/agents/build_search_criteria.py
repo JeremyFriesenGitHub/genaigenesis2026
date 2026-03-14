@@ -3,10 +3,13 @@ Extract structured search criteria from a conversation/transcript using Railtrac
 """
 import asyncio
 import json
+import logging
 import os
 import sys
 import urllib.request
 from pathlib import Path
+
+logging.getLogger("LiteLLM").setLevel(logging.ERROR)
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 TEMPLATES_DIR = ROOT / "templates" / "build_search_criteria"
@@ -24,21 +27,20 @@ def _render_prompt(name: str, **context) -> str:
 
 
 def _get_llm():
+    """Use railtracks OpenAI-compatible provider for the hackathon endpoint."""
     from dotenv import load_dotenv
     from app.config import GPT_OSS_BASE_URL, GPT_OSS_MODEL
     load_dotenv(ROOT / ".env")
+    api_key = os.getenv("OPENAI_API_KEY", "") or "not-set"
     import railtracks as rt
-    api_key = os.getenv("OPENAI_API_KEY", "")
-    if hasattr(rt.llm, "OpenAICompatibleLLM"):
-        return rt.llm.OpenAICompatibleLLM(
-            model=GPT_OSS_MODEL,
-            base_url=GPT_OSS_BASE_URL,
-            api_key=api_key,
-        )
-    model_name = GPT_OSS_MODEL if GPT_OSS_MODEL.startswith("openai/") else f"openai/{GPT_OSS_MODEL}"
-    os.environ["OPENAI_API_KEY"] = api_key
-    os.environ["OPENAI_BASE_URL"] = GPT_OSS_BASE_URL
-    return rt.llm.OpenAILLM(model_name)
+    provider = getattr(rt.llm, "OpenAICompatibleProvider", None) or getattr(rt.llm, "OpenAICompatibleLLM", None)
+    if provider is None:
+        raise RuntimeError("railtracks has no OpenAICompatibleProvider or OpenAICompatibleLLM")
+    return provider(
+        GPT_OSS_MODEL,
+        api_base=GPT_OSS_BASE_URL.rstrip("/"),
+        api_key=api_key,
+    )
 
 
 def _default_criteria() -> dict:
@@ -103,6 +105,9 @@ def extract_search_criteria(transcript: str) -> dict:
         raise ValueError(
             "Set GPT_OSS_BASE_URL and GPT_OSS_MODEL in .env (see .env.example)."
         )
+    os.environ.setdefault("OPENAI_BASE_URL", GPT_OSS_BASE_URL.rstrip("/"))
+    if not os.environ.get("OPENAI_API_KEY"):
+        os.environ.setdefault("OPENAI_API_KEY", "not-set")
     system_prompt = _render_prompt("system_prompt")
     user_prompt = _render_prompt("user_prompt", transcript=transcript)
     try:
@@ -115,7 +120,10 @@ def extract_search_criteria(transcript: str) -> dict:
                 system_message=system_prompt,
             )
             result = asyncio.run(rt.call(agent, user_prompt))
-            return _parse_response_json(getattr(result, "text", ""))
+            criteria = _parse_response_json(getattr(result, "text", ""))
+            print("(railtracks)", end=" ")
+            return criteria
     except Exception:
         pass
+    print("(http fallback)", end=" ")
     return _call_openai_compatible(system_prompt, user_prompt)
