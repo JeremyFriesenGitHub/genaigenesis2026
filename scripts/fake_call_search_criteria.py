@@ -1,7 +1,6 @@
 """
-Fake call script: run the build-search-criteria agent on a transcript file.
-Reads from data/transcripts/ by default (as if it were a real call).
-Writes extracted criteria to data/search_criteria/<city_name>.json.
+Run the build-search-criteria agent on a transcript; writes data/search_criteria/<city>.json.
+Default transcript: data/transcripts/sample_intake.txt. See docs/TRANSCRIPT_TO_CRITERIA.md.
 Run from repo root: python scripts/fake_call_search_criteria.py [path/to/transcript.txt]
 """
 import json
