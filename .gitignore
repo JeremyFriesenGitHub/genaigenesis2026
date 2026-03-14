@@ -1,4 +1,5 @@
 .env
+.railtracks/
 ngrok-bin/
 ngrok.zip
 .pyuser/
