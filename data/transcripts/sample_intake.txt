@@ -1,0 +1,9 @@
+Agent: Hi, I'm your real estate assistant. Are you looking to rent or buy?
+User: Rent.
+Agent: Great. What's your budget per month?
+User: I'd like to stay under 3000, ideally around 2500.
+Agent: How many bedrooms do you need?
+User: At least one, two if possible.
+Agent: Any preferred area?
+User: Yeah, somewhere in New York — Brooklyn or Manhattan would work.
+Agent: Got it. I'll look for rentals in New York, under 3000, one bedroom minimum. We'll be in touch with some options.

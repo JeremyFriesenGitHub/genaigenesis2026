@@ -10,3 +10,7 @@ pandas
 xlsxwriter
 lxml
 playwright
+railtracks
+railtracks[cli]
+openai
+jinja2
