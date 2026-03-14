@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Real Estate Agent — Find Your Dream Home via Text</title>
+  <meta name="description" content="Text our AI real estate agent and get personalized listings, instant callbacks, and scheduled viewings — all from your phone." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+        },
+      },
+    };
+  </script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="bg-slate-950 text-white font-sans antialiased overflow-x-hidden">
+
+  <!-- Animated background blobs -->
+  <div class="blob-container" aria-hidden="true">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <!-- Navbar -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="#" class="text-xl font-bold gradient-text">HomeAI</a>
+      <a href="sms:+18259067207"
+         class="btn-glow px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300">
+        Text Us Now
+      </a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="relative min-h-screen flex items-center justify-center px-6 pt-20">
+    <div class="text-center max-w-3xl mx-auto reveal">
+      <p class="text-cyan-400 font-semibold text-sm uppercase tracking-widest mb-4">AI-Powered Real Estate</p>
+      <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight mb-6">
+        <span class="gradient-text">Find Your Dream Home</span><br />
+        <span class="text-white/90">With a Simple Text</span>
+      </h1>
+      <p class="text-lg sm:text-xl text-slate-400 mb-10 max-w-xl mx-auto">
+        Just text our AI agent. It understands what you want, finds matching listings, and connects you with viewings — no apps, no logins, no hassle.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="sms:+18259067207"
+           class="btn-glow px-8 py-4 rounded-full text-lg font-bold transition-all duration-300 inline-flex items-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+          </svg>
+          Text +1 (825) 906-7207
+        </a>
+        <a href="#how-it-works" class="text-slate-400 hover:text-white transition-colors font-medium">
+          See how it works &darr;
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section id="how-it-works" class="py-24 px-6">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16 reveal">
+        <p class="text-cyan-400 font-semibold text-sm uppercase tracking-widest mb-3">Simple Process</p>
+        <h2 class="text-3xl sm:text-4xl font-bold">How It Works</h2>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Step 1 -->
+        <div class="glass-card p-6 rounded-2xl text-center reveal">
+          <div class="step-number mx-auto mb-4">1</div>
+          <h3 class="text-lg font-bold mb-2">Text Us</h3>
+          <p class="text-slate-400 text-sm">Send a message describing your ideal home — budget, location, style.</p>
+        </div>
+        <!-- Step 2 -->
+        <div class="glass-card p-6 rounded-2xl text-center reveal">
+          <div class="step-number mx-auto mb-4">2</div>
+          <h3 class="text-lg font-bold mb-2">AI Calls You</h3>
+          <p class="text-slate-400 text-sm">Our AI agent calls to confirm your preferences and answer questions.</p>
+        </div>
+        <!-- Step 3 -->
+        <div class="glass-card p-6 rounded-2xl text-center reveal">
+          <div class="step-number mx-auto mb-4">3</div>
+          <h3 class="text-lg font-bold mb-2">Get Listings</h3>
+          <p class="text-slate-400 text-sm">Receive curated listings that match your criteria, sent right to your phone.</p>
+        </div>
+        <!-- Step 4 -->
+        <div class="glass-card p-6 rounded-2xl text-center reveal">
+          <div class="step-number mx-auto mb-4">4</div>
+          <h3 class="text-lg font-bold mb-2">Schedule Viewings</h3>
+          <p class="text-slate-400 text-sm">Book property tours instantly — all coordinated through text.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="features" class="py-24 px-6">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16 reveal">
+        <p class="text-cyan-400 font-semibold text-sm uppercase tracking-widest mb-3">Why Choose Us</p>
+        <h2 class="text-3xl sm:text-4xl font-bold">Powered by Intelligence</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Feature 1 -->
+        <div class="glass-card p-8 rounded-2xl reveal">
+          <div class="w-12 h-12 rounded-xl bg-indigo-500/20 flex items-center justify-center mb-5">
+            <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold mb-3">AI-Powered Matching</h3>
+          <p class="text-slate-400 text-sm leading-relaxed">Our agent understands natural language — describe your dream home in your own words and get matches that actually fit.</p>
+        </div>
+        <!-- Feature 2 -->
+        <div class="glass-card p-8 rounded-2xl reveal">
+          <div class="w-12 h-12 rounded-xl bg-cyan-500/20 flex items-center justify-center mb-5">
+            <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Real-Time Listings</h3>
+          <p class="text-slate-400 text-sm leading-relaxed">Access the freshest listings pulled from multiple sources the moment they go live — never miss a great property.</p>
+        </div>
+        <!-- Feature 3 -->
+        <div class="glass-card p-8 rounded-2xl reveal">
+          <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center mb-5">
+            <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Zero Hassle</h3>
+          <p class="text-slate-400 text-sm leading-relaxed">No app downloads, no account signups, no forms. Just text a number and start your home search in seconds.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Banner -->
+  <section class="py-24 px-6">
+    <div class="max-w-4xl mx-auto">
+      <div class="glass-card rounded-3xl p-10 sm:p-14 text-center reveal cta-glow">
+        <h2 class="text-3xl sm:text-4xl font-bold mb-4">
+          Ready to Find <span class="gradient-text">Your Home</span>?
+        </h2>
+        <p class="text-slate-400 mb-8 max-w-lg mx-auto">
+          Send us a text right now. Our AI agent is available 24/7 and ready to help you find the perfect place.
+        </p>
+        <a href="sms:+18259067207"
+           class="btn-glow px-10 py-4 rounded-full text-lg font-bold transition-all duration-300 inline-flex items-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+          </svg>
+          Text +1 (825) 906-7207
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-10 px-6 border-t border-white/5">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500">
+      <p>Built at <span class="text-slate-300 font-semibold">GenAI Genesis 2026</span></p>
+      <a href="sms:+18259067207" class="text-slate-400 hover:text-white transition-colors">+1 (825) 906-7207</a>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

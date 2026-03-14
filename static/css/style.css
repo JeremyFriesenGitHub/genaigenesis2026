@@ -1,0 +1,178 @@
+/* ── Gradient text ── */
+.gradient-text {
+  background: linear-gradient(135deg, #6366f1, #22d3ee, #a855f7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Animated blobs ── */
+.blob-container {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.4;
+  will-change: transform;
+}
+
+.blob-1 {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, #6366f1, transparent 70%);
+  top: -10%;
+  left: -10%;
+  animation: drift-1 20s ease-in-out infinite;
+}
+
+.blob-2 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, #22d3ee, transparent 70%);
+  top: 40%;
+  right: -10%;
+  animation: drift-2 25s ease-in-out infinite;
+}
+
+.blob-3 {
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, #a855f7, transparent 70%);
+  bottom: -10%;
+  left: 30%;
+  animation: drift-3 22s ease-in-out infinite;
+}
+
+@keyframes drift-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(80px, 60px) scale(1.1); }
+  66% { transform: translate(-40px, 100px) scale(0.95); }
+}
+
+@keyframes drift-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-60px, -80px) scale(1.05); }
+  66% { transform: translate(50px, -40px) scale(0.9); }
+}
+
+@keyframes drift-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(60px, -50px) scale(1.08); }
+  66% { transform: translate(-70px, 30px) scale(0.92); }
+}
+
+/* ── Glass cards ── */
+.glass-card {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px rgba(99, 102, 241, 0.1);
+}
+
+/* ── Step numbers ── */
+.step-number {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.125rem;
+  background: linear-gradient(135deg, #6366f1, #22d3ee);
+  color: white;
+}
+
+/* ── CTA glow ── */
+.cta-glow {
+  position: relative;
+}
+
+.cta-glow::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 1.5rem;
+  background: linear-gradient(135deg, #6366f1, #22d3ee, #a855f7);
+  opacity: 0.15;
+  z-index: -1;
+  filter: blur(24px);
+}
+
+/* ── Glow button ── */
+.btn-glow {
+  background: linear-gradient(135deg, #6366f1, #22d3ee);
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-glow::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(135deg, #6366f1, #22d3ee, #a855f7);
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0;
+  filter: blur(12px);
+  transition: opacity 0.3s ease;
+}
+
+.btn-glow:hover::before {
+  opacity: 0.6;
+}
+
+.btn-glow:hover {
+  transform: scale(1.03);
+}
+
+/* ── Navbar glass on scroll ── */
+.nav-scrolled {
+  background: rgba(2, 6, 23, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ── Scroll reveal ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Ensure content sits above blobs ── */
+nav, section, footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Smooth scrolling ── */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ── Selection color ── */
+::selection {
+  background: rgba(99, 102, 241, 0.3);
+}
