@@ -1,7 +1,6 @@
 import logging
 from fastapi import APIRouter, Form
 from fastapi.responses import Response
-from app.services.vapi_call import trigger_call
 
 logger = logging.getLogger(__name__)
 
