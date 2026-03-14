@@ -4,4 +4,9 @@ twilio
 python-dotenv
 python-multipart
 httpx
-python-multipart
+requests
+beautifulsoup4
+pandas
+xlsxwriter
+lxml
+playwright
