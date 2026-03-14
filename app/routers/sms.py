@@ -1,7 +1,6 @@
 import logging
 from fastapi import APIRouter, Form
 from fastapi.responses import Response
-from app.config import VAPI_API_KEY
 from app.services.vapi_call import trigger_call
 
 logger = logging.getLogger(__name__)
@@ -46,22 +45,6 @@ async def sms_webhook(From: str = Form(...), Body: str = Form("")):
     if state == "awaiting_confirmation":
         if body.upper() == "YES":
             conversations[phone] = "called"
-            if VAPI_API_KEY and not VAPI_API_KEY.startswith("your_"):
-                try:
-                    result = await trigger_call(phone)
-                    logger.info(f"Vapi call initiated: {result}")
-                    return twiml_response("Great! Calling you now...")
-                except Exception as e:
-                    logger.error(f"Failed to trigger Vapi call: {e}")
-                    conversations[phone] = "awaiting_confirmation"
-                    return twiml_response(
-                        "Sorry, I couldn't start the call. Please try replying YES again."
-                    )
-            else:
-                logger.info(f"Vapi not configured — skipping call for {phone}")
-                return twiml_response(
-                    "Thanks for confirming! We'll be in touch soon."
-                )
         else:
             return twiml_response(
                 "No worries! Reply YES whenever you're ready for a call."
