@@ -1,4 +1,4 @@
-"""Run Zillow search: save raw HTML, then one JSON file with criteria, URL, listings, links."""
+"""Run Zillow search: save raw HTML and one JSON with criteria, URL, listings, links."""
 import json
 from pathlib import Path
 
@@ -18,19 +18,16 @@ def main():
         "beds_min": 1,
     }
     print("Opening browser. Solve CAPTCHA if shown, then press Enter.\n")
-    data = search(criteria, headless=False)
+    data = search(criteria)
     listings = data["listings"]
     links = data["listing_links"]
-    raw_html = data.get("raw_html") or ""
-    search_url = data.get("search_url") or ""
+    raw_html = data["raw_html"]
+    search_url = data["search_url"]
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-
-    # 1. Save raw HTML first 
     ZILLOW_RAW_HTML.write_text(raw_html, encoding="utf-8")
     print(f"Saved raw HTML: {ZILLOW_RAW_HTML}")
 
-    # 2. Single output file: criteria, search_url, listing_count, listings, listing_links
     payload = {
         "criteria": criteria,
         "search_url": search_url,

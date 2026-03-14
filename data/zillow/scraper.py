@@ -1,7 +1,7 @@
-"""Zillow search: build URL, fetch via Playwright, parse (structured first, then HTML)."""
+"""Zillow search: build URL, fetch via Playwright, parse."""
 from urllib.parse import quote_plus
 
-from .parse import listing_links_from_html, parse_listings
+from .parse import dedupe_links, listing_links_from_html, parse_listings
 from .playwright_fetch import fetch_html
 
 SEARCH_SELECTOR = "script[data-zrr-shared-data-key], article, [data-test='property-card-price']"
@@ -17,13 +17,6 @@ def build_search_url(criteria: dict) -> str:
 
 
 def search(criteria: dict, *, headless: bool = False) -> dict:
-    """
-    Fetch search page with Playwright. Returns:
-    - listings: normalized, deduped list of listing dicts
-    - listing_links: deduped list of URLs
-    - raw_html: full page HTML (for saving / debugging)
-    - search_url: URL that was fetched
-    """
     url = build_search_url(criteria)
     html = fetch_html(
         url,
@@ -37,8 +30,7 @@ def search(criteria: dict, *, headless: bool = False) -> dict:
     listings = parse_listings(html)
     links = listing_links_from_html(html)
     if not links and listings:
-        links = [r.get("url") or "" for r in listings if r.get("url")]
-    from .parse import dedupe_links
+        links = [r.get("url", "") or "" for r in listings]
     links = dedupe_links(links)
     return {
         "listings": listings,

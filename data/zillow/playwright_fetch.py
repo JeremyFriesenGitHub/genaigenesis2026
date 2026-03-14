@@ -10,10 +10,8 @@ def fetch_html(
     wait_timeout_ms: int = 25_000,
     pause_for_captcha: bool = True,
 ) -> Optional[str]:
-    try:
-        from playwright.sync_api import sync_playwright
-    except ImportError:
-        return None
+    from playwright.sync_api import sync_playwright
+
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=headless)
         try:
@@ -24,8 +22,7 @@ def fetch_html(
                     page.wait_for_selector(wait_selector, timeout=wait_timeout_ms)
                 except Exception:
                     if pause_for_captcha:
-                        input("\n>>> Solve CAPTCHA in browser, then press Enter...")
+                        input("\nSolve CAPTCHA in browser, then press Enter...")
             return page.content()
         finally:
             browser.close()
-    return None
