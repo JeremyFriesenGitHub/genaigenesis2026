@@ -48,7 +48,7 @@
 - OpenAI-compatible LLM endpoint
 
 **Communication**
-- Twilio (SMS and calls)
+- Telnyx (SMS and calls)
 
 **Data Collection**
 - Playwright
