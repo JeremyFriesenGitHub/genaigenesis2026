@@ -6,8 +6,6 @@ python-multipart
 httpx
 requests
 beautifulsoup4
-pandas
-xlsxwriter
 lxml
 playwright
 playwright-stealth
