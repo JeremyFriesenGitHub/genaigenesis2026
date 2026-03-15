@@ -417,12 +417,12 @@ button.hero-phone {
   overflow: hidden;
   background: #f7f7f8;
   border-radius: 32px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 5px solid #1a1a1a;
   display: flex;
   flex-direction: column;
   box-shadow:
     0 32px 80px rgba(0, 0, 0, 0.5),
-    0 0 0 1px rgba(255, 255, 255, 0.03);
+    0 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
 
@@ -441,7 +441,7 @@ button.hero-phone {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 20px 0;
+  padding: 0 20px 0;
   font-size: 0.72rem;
   font-weight: 600;
   color: #111111;
@@ -465,7 +465,7 @@ button.hero-phone {
 .phone-notch {
   width: 80px;
   height: 20px;
-  background: #000;
+  background: #1a1a1a;
   border-radius: 0 0 12px 12px;
   flex-shrink: 0;
 }
