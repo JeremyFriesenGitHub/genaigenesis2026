@@ -307,6 +307,19 @@ a {
   color: #ffffff;
 }
 
+/* Hero phone: copy button, looks like plain text */
+button.hero-phone {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+.hero button.hero-phone {
+  color: #ffffff;
+}
 
 .hero .btn-primary {
   background: var(--green);
