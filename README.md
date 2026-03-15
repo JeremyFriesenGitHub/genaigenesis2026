@@ -61,9 +61,4 @@
 - CSS
 - JavaScript
 
-## Setup & Installation ⚙️
 
-### 1. Clone the repository
-```bash
-git clone https://github.com/chantalzhang/genaigenesis2026.git
-cd genaigenesis2026
