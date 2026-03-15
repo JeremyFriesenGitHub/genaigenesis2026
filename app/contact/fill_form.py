@@ -109,8 +109,8 @@ def fill_all(
     results = {}
     for label, func, value in [
         ("name", fill_name, name),
-        ("email", fill_email, email),
         ("phone", fill_phone, phone),
+        ("email", fill_email, email),
         ("message", fill_message, message),
     ]:
         results[label] = func(page, value, scope, slow_mo_ms)

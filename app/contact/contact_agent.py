@@ -3,6 +3,9 @@ import logging
 import os
 import re
 import time
+
+from dotenv import load_dotenv
+load_dotenv()
 from dataclasses import dataclass, field
 from typing import Optional
 
@@ -26,10 +29,10 @@ SCRAPERAPI_PROXY_PORT = 8001
 
 @dataclass
 class Lead:
-    name: str
-    email: str
-    phone: str
-    message: str
+    name: str = "Maya Chen"
+    email: str = "maya@personaplex.ai"
+    phone: str = "+18252035213"
+    message: str = "Hi, I'm interested in this property. When can I schedule a viewing?"
 
 
 @dataclass
