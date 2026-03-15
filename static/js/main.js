@@ -12,14 +12,29 @@ const observer = new IntersectionObserver(
 
 document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
 
-// ── Navbar: dark glass over hero, light glass over white sections ──
+// ── Copy phone number on click ───────────────────────
+document.querySelectorAll('.copy-phone').forEach((btn) => {
+  const originalText = btn.textContent;
+  btn.addEventListener('click', async () => {
+    const value = btn.dataset.copy || originalText.replace(/\s/g, '');
+    try {
+      await navigator.clipboard.writeText(value);
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = originalText; }, 1500);
+    } catch (err) {
+      console.warn('Copy failed', err);
+    }
+  });
+});
+
+// ── Navbar: dark glass over hero, light glass over white sections (removed from DOM) ──
 const navbar = document.getElementById('navbar');
-const hero = document.querySelector('.hero');
-
-function updateNavbar() {
-  const heroBottom = hero ? hero.offsetTop + hero.offsetHeight : 0;
-  navbar.classList.toggle('nav-light', window.scrollY > heroBottom - 80);
+if (navbar) {
+  const hero = document.querySelector('.hero');
+  function updateNavbar() {
+    const heroBottom = hero ? hero.offsetTop + hero.offsetHeight : 0;
+    navbar.classList.toggle('nav-light', window.scrollY > heroBottom - 80);
+  }
+  window.addEventListener('scroll', updateNavbar, { passive: true });
+  updateNavbar();
 }
-
-window.addEventListener('scroll', updateNavbar, { passive: true });
-updateNavbar();

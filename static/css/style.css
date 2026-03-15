@@ -23,7 +23,7 @@
   --cyan: #22d3ee;
   --cyan-soft: rgba(34, 211, 238, 0.10);
 
-  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, "Segoe UI", sans-serif;
   --max-w: 1140px;
   --radius: 14px;
 }
@@ -106,6 +106,11 @@ a {
   max-width: var(--max-w);
   margin: 0 auto;
   padding: 0 28px;
+}
+
+.hero .container {
+  padding-left: 8px;
+  padding-right: 8px;
 }
 
 /* ── Navbar ───────────────────────────────────────── */
@@ -213,18 +218,18 @@ a {
   pointer-events: none;
 }
 
-/* Dark gradient overlay — ensures text readability */
+/* Dark gradient overlay — ensures text readability (stronger behind text) */
 .hero-overlay {
   position: absolute;
   inset: 0;
   z-index: 1;
   background:
     linear-gradient(180deg,
-      rgba(8, 9, 12, 0.65) 0%,
-      rgba(8, 9, 12, 0.55) 40%,
-      rgba(8, 9, 12, 0.75) 100%),
+      rgba(8, 9, 12, 0.66) 0%,
+      rgba(8, 9, 12, 0.58) 40%,
+      rgba(8, 9, 12, 0.76) 100%),
     linear-gradient(90deg,
-      rgba(8, 9, 12, 0.55) 0%,
+      rgba(8, 9, 12, 0.58) 0%,
       transparent 60%);
   pointer-events: none;
 }
@@ -247,27 +252,50 @@ a {
 
 /* ── Hero Copy (Left) ─────────────────────────────── */
 .hero-copy {
-  max-width: 560px;
+  max-width: 740px;
 }
 
 .hero-copy h1 {
-  font-size: clamp(3rem, 7vw, 5.2rem);
+  font-size: clamp(3.1rem, 7.2vw, 5rem);
   font-weight: 900;
   letter-spacing: -2.5px;
   line-height: 1.0;
   margin-bottom: 24px;
 }
 
+.hero-copy h1 .agent-pair {
+  white-space: nowrap;
+}
+
+/* Second line smaller so it fits on one line; Agent² stays big */
+.hero-copy h1 .hero-tagline {
+  display: block;
+  font-size: 0.54em;
+  letter-spacing: -0.02em;
+  margin-top: 0.35em;
+}
+
 .accent {
   color: var(--green);
 }
 
+/* Extra space between "Agent" and superscript ² */
+.hero-copy h1 > .accent {
+  margin-left: 0.1em;
+}
+
 .hero-sub {
-  font-size: 1.15rem;
+  font-family: var(--font);
+  font-size: 1.4rem;
   color: var(--text);
   line-height: 1.7;
-  max-width: 420px;
+  max-width: 520px;
   margin-bottom: 40px;
+}
+
+.hero-sub-emphasis {
+  font-weight: 600;
+  letter-spacing: 0.01em;
 }
 
 .hero-actions {
@@ -278,7 +306,8 @@ a {
 }
 
 .hero-phone {
-  font-size: 0.9rem;
+  font-family: var(--font);
+  font-size: 1.15rem;
   color: var(--text);
   font-weight: 500;
   letter-spacing: 0.2px;
@@ -290,20 +319,41 @@ a {
   color: #ffffff;
 }
 
+/* Hero phone: copy button, looks like plain text */
+button.hero-phone {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+}
+
+.hero button.hero-phone {
+  font-family: var(--font);
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: #ffffff;
+}
 
 .hero .btn-primary {
+  font-family: var(--font);
+  font-size: 1.2rem;
+  padding: 19px 38px;
   background: var(--green);
   border-color: var(--green);
   color: #ffffff;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  box-shadow: 0 4px 24px rgba(52, 199, 89, 0.25);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .hero .btn-primary:hover {
   background: var(--green-dark);
   border-color: var(--green-dark);
-  box-shadow: 0 8px 32px rgba(52, 199, 89, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .hero .btn-primary svg {
@@ -361,8 +411,9 @@ a {
    ───────────────────────────────────────────────────── */
 .phone-frame {
   width: 100%;
-  max-width: 340px;
-  max-height: 520px;
+  max-width: 320px;
+  aspect-ratio: 9 / 17;
+  max-height: 585px;
   overflow: hidden;
   background: #f7f7f8;
   border-radius: 32px;
@@ -844,12 +895,12 @@ footer {
   }
 
   .hero-copy h1 {
-    font-size: clamp(2.4rem, 10vw, 3.4rem);
+    font-size: clamp(2.75rem, 10vw, 3.85rem);
     letter-spacing: -1.8px;
   }
 
   .hero-sub {
-    font-size: 1rem;
+    font-size: 1.2rem;
     margin-bottom: 32px;
     margin-left: auto;
     margin-right: auto;
@@ -891,13 +942,24 @@ footer {
   }
 
   .hero-copy h1 {
-    font-size: 2.2rem;
+    font-size: 2.65rem;
     letter-spacing: -1.2px;
   }
 
   .hero-sub {
-    font-size: 0.92rem;
+    font-size: 1.1rem;
     margin-bottom: 28px;
+  }
+
+  .hero .btn-primary {
+    font-size: 1.05rem;
+    padding: 17px 28px;
+  }
+
+  .hero-phone,
+  .hero button.hero-phone {
+    font-size: 1.05rem;
+    font-weight: 500;
   }
 
   .btn-primary {

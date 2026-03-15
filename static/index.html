@@ -7,22 +7,10 @@
   <title>Agent² — Find Your Next Home by Text</title>
   <meta name="description"
     content="An AI-powered real estate agent, squared. Text to start, tell us what you need, and get matched listings by SMS." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
-    rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 
 <body>
-
-  <!-- ── Navbar ──────────────────────────────────────── -->
-  <nav id="navbar">
-    <div class="container nav-inner">
-      <a href="#" class="nav-logo">Agent²</a>
-      <a href="sms:+18259067207?&body=Hi%2C%20I%27m%20looking%20for%20a%20place" class="nav-cta">Text Us</a>
-    </div>
-  </nav>
 
   <!-- ── Hero ────────────────────────────────────────── -->
   <section class="hero">
@@ -35,10 +23,10 @@
     <div class="container hero-grid">
       <!-- Left: Copy -->
       <div class="hero-copy">
-        <h1>Find your<br />next home<br /><span class="accent">by text</span></h1>
+        <h1>Agent<span class="accent">²</span><br /><span class="hero-tagline">your real estate <span class="agent-pair">agent <span class="accent">agent</span></span></span></h1>
         <p class="hero-sub">
-          Text our AI agent. Tell us what you need. Get matched
-          listings sent to&nbsp;your&nbsp;phone.
+          Text our agent. Tell us what you're looking for.<br />
+          <span class="hero-sub-emphasis">Get matching homes sent straight to your phone.</span>
         </p>
         <div class="hero-actions">
           <!-- ── PRIMARY CTA — edit phone number & body below ── -->
@@ -49,8 +37,7 @@
             </svg>
             Start Texting
           </a>
-          <a href="sms:+18259067207?&body=Hi%2C%20I%27m%20looking%20for%20a%20place" class="hero-phone">+1 (825)
-            906‑7207</a>
+          <button type="button" class="hero-phone copy-phone" data-copy="+18259067207" title="Click to copy number" aria-label="Copy phone number">+1 (825) 906‑7207</button>
         </div>
       </div>
       <!-- Right: Conversation Preview (the product visual) -->
@@ -58,7 +45,7 @@
         <div class="phone-frame">
           <!-- iOS Status Bar -->
           <div class="ios-status-bar">
-            <span class="ios-time">9:41</span>
+            <span class="ios-time">9:51</span>
             <div class="phone-notch"></div>
             <div class="ios-icons">
               <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor">
@@ -89,7 +76,7 @@
           </div>
           <!-- iMessage thread -->
           <div class="sms-thread">
-            <div class="imsg-date">Today 9:41 AM</div>
+            <div class="imsg-date">Today 9:51 AM</div>
             <div class="sms sms-out">Hi, I'm looking for a place</div>
             <div class="sms sms-in">Hey! 👋 I'd love to help. Can I call you to learn more about what you need? Reply
               YES.</div>
