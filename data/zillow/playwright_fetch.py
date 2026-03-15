@@ -4,7 +4,7 @@ from typing import Optional
 
 from .proxy import proxy_for_playwright
 
-MAX_RETRIES = 3
+MAX_RETRIES = 10
 
 
 def _has_captcha(page) -> bool:
