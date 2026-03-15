@@ -60,9 +60,15 @@ Output valid JSON only, no markdown or extra text. Use exactly this structure:
 
 Field rules:
 - location.query: always fill with whatever location text the caller mentioned, even if you also populate city/state_province.
+- location.state_province: For Canadian cities always include the province abbreviation (ON, BC, AB, QC, MB, SK, NS, NB, NL, PE, NT, YT, NU). For US cities include the state abbreviation (e.g. NY, CA, TX). Never leave this null if a city was mentioned.
 - intent: always "buy".
-- price.min / price.max: numbers in dollars, or null if not mentioned.
-- bedrooms.min / bedrooms.max: integers, or null.
+- price.min / price.max: ALWAYS set both min and max together — never one without the other.
+  - If the caller mentions only a maximum budget, set max to that amount and set min to 50% of max (e.g. max=1200000 → min=600000).
+  - If the caller mentions only a minimum, set min to that amount and set max to 150% of min (e.g. min=600000 → max=900000).
+  - If the caller gives a range, use it directly.
+  - If no price is mentioned at all, estimate a reasonable range based on the location and property type (e.g. Toronto detached house → min=700000, max=1500000).
+  - Never leave both as null. Always provide a plausible range.
+- bedrooms.min / bedrooms.max: integers, or null. If only min is mentioned, leave max as null. If only max is mentioned, leave min as null.
 - bathrooms.min / bathrooms.max: integers, or null.
 - property_type: array of zero or more from: "house", "condo", "townhouse", "multi_family", "land".
 - size fields: numbers or null.

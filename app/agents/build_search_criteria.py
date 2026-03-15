@@ -52,7 +52,7 @@ def _default_criteria() -> dict:
             "postal_code": None,
             "neighborhood": None,
         },
-        "intent": "buy",
+        "intent": "rent",
         "price": {"min": None, "max": None},
         "bedrooms": {"min": None, "max": None},
         "bathrooms": {"min": None, "max": None},

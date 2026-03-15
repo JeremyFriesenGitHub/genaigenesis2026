@@ -1,7 +1,9 @@
 """Zillow search: broad scrape, detail fetch for features, then score & rank."""
+from __future__ import annotations
+import json
 import logging
 import re
-from urllib.parse import quote_plus
+from urllib.parse import quote_plus, quote
 
 from .detail import fetch_detail_features
 from .parse import dedupe_links, listing_links_from_html, parse_listings
@@ -16,6 +18,28 @@ SEARCH_SELECTOR = "script[data-zrr-shared-data-key], article, [data-test='proper
 # URL builder — intentionally broad (location + intent only)
 # ---------------------------------------------------------------------------
 
+def _location_slug(location: str) -> str:
+    """Convert 'Brampton ON' or 'New York NY' to 'brampton-on' / 'new-york-ny'."""
+    slug = location.lower().strip()
+    slug = re.sub(r"[,]+", "", slug)       # remove commas
+    slug = re.sub(r"\s+", "-", slug)       # spaces → hyphens
+    slug = re.sub(r"-+", "-", slug)        # collapse multiple hyphens
+    return slug.strip("-")
+
+
+def _get_num(val) -> int | float | None:
+    """Coerce a value to a number, returning None for empty strings / None."""
+    if val is None or val == "":
+        return None
+    try:
+        return int(val)
+    except (ValueError, TypeError):
+        try:
+            return float(val)
+        except (ValueError, TypeError):
+            return None
+
+
 def build_search_url(criteria: dict) -> str:
     loc = criteria.get("location", {})
     if isinstance(loc, dict):
@@ -24,12 +48,63 @@ def build_search_url(criteria: dict) -> str:
             val = loc.get(key)
             if val:
                 parts.append(val)
-        location = ", ".join(parts) if parts else (loc.get("query") or "")
+        location = " ".join(parts) if parts else (loc.get("query") or "")
     else:
         location = str(loc)
 
-    slug = quote_plus(location)
-    return f"https://www.zillow.com/homes/for_sale/{slug}/"
+    intent = criteria.get("intent", "rent")
+    page = int(criteria.get("page", 1))
+    slug = _location_slug(location)
+
+    # Build filterState from criteria (supports both flat and nested formats)
+    filter_state = {}
+
+    # — price —
+    price_crit = criteria.get("price", {}) if isinstance(criteria.get("price"), dict) else {}
+    p_max = _get_num(price_crit.get("max")) or _get_num(criteria.get("price_max"))
+    p_min = _get_num(price_crit.get("min")) or _get_num(criteria.get("price_min"))
+    if p_max or p_min:
+        price_filter = {}
+        if p_min:
+            price_filter["min"] = int(p_min)
+        if p_max:
+            price_filter["max"] = int(p_max)
+        filter_state["price"] = price_filter
+
+    # — beds —
+    beds_crit = criteria.get("bedrooms", {}) if isinstance(criteria.get("bedrooms"), dict) else {}
+    b_min = _get_num(beds_crit.get("min")) or _get_num(criteria.get("beds_min"))
+    if b_min:
+        filter_state["beds"] = {"min": int(b_min)}
+
+    # — baths —
+    baths_crit = criteria.get("bathrooms", {}) if isinstance(criteria.get("bathrooms"), dict) else {}
+    ba_min = _get_num(baths_crit.get("min")) or _get_num(criteria.get("baths_min"))
+    if ba_min:
+        filter_state["baths"] = {"min": int(ba_min)}
+
+    # — for-sale vs rental —
+    if intent == "rent":
+        filter_state["isForRent"] = {"value": True}
+        filter_state["isForSaleByAgent"] = {"value": False}
+        filter_state["isForSaleByOwner"] = {"value": False}
+        base = f"https://www.zillow.com/{slug}/rentals/"
+    else:
+        base = f"https://www.zillow.com/{slug}/"
+
+    # — pagination (inside searchQueryState when filters present, path suffix otherwise) —
+    pagination = {}
+    if page > 1:
+        pagination = {"currentPage": page}
+
+    if filter_state:
+        qs_obj = {"filterState": filter_state}
+        if pagination:
+            qs_obj["pagination"] = pagination
+        qs = json.dumps(qs_obj, separators=(",", ":"))
+        return f"{base}{page}_p/?searchQueryState={quote(qs)}" if page > 1 else f"{base}?searchQueryState={quote(qs)}"
+    page_suffix = f"{page}_p/" if page > 1 else ""
+    return f"{base}{page_suffix}"
 
 
 # ---------------------------------------------------------------------------
