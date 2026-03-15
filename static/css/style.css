@@ -340,8 +340,8 @@ button.hero-phone {
 
 .hero .btn-primary {
   font-family: var(--font);
-  font-size: 1.2rem;
-  padding: 19px 38px;
+  font-size: 1.35rem;
+  padding: 22px 44px;
   background: var(--green);
   border-color: var(--green);
   color: #ffffff;
@@ -746,7 +746,7 @@ button.hero-phone {
 }
 
 .how .how-header {
-  margin-bottom: 40px;
+  margin-bottom: 56px;
 }
 
 .how-header,
@@ -991,6 +991,44 @@ button.hero-phone {
 
 
 /* ─────────────────────────────────────────────────────
+   BOTTOM CTA
+   ───────────────────────────────────────────────────── */
+.bottom-cta {
+  padding: 64px 0;
+  text-align: center;
+}
+
+.bottom-cta .container {
+  display: flex;
+  justify-content: center;
+}
+
+.bottom-cta .btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font);
+  font-size: 1.35rem;
+  padding: 22px 44px;
+  background: var(--green);
+  border-color: var(--green);
+  color: #ffffff;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.bottom-cta .btn-primary:hover {
+  background: var(--green-dark);
+  border-color: var(--green-dark);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.bottom-cta .btn-primary svg {
+  stroke: #ffffff;
+}
+
+/* ─────────────────────────────────────────────────────
    FOOTER
    ───────────────────────────────────────────────────── */
 footer {
@@ -1137,7 +1175,7 @@ footer {
 
   .how-header,
   .features-header {
-    margin-bottom: 40px;
+    margin-bottom: 52px;
   }
 }
 
@@ -1161,8 +1199,13 @@ footer {
   }
 
   .hero .btn-primary {
-    font-size: 1.05rem;
-    padding: 17px 28px;
+    font-size: 1.15rem;
+    padding: 20px 34px;
+  }
+
+  .bottom-cta .btn-primary {
+    font-size: 1.15rem;
+    padding: 20px 34px;
   }
 
   .hero-phone,
