@@ -3,6 +3,9 @@ import os
 from typing import Optional
 
 import requests
+from dotenv import load_dotenv
+
+load_dotenv()
 
 SCRAPER_API_KEY = os.environ.get("SCRAPER_API_KEY", "")
 SCRAPER_API_URL = "https://api.scraperapi.com"
