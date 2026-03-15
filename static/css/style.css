@@ -220,11 +220,11 @@ a {
   z-index: 1;
   background:
     linear-gradient(180deg,
-      rgba(8, 9, 12, 0.65) 0%,
-      rgba(8, 9, 12, 0.55) 40%,
-      rgba(8, 9, 12, 0.75) 100%),
+      rgba(8, 9, 12, 0.6) 0%,
+      rgba(8, 9, 12, 0.53) 40%,
+      rgba(8, 9, 12, 0.7) 100%),
     linear-gradient(90deg,
-      rgba(8, 9, 12, 0.55) 0%,
+      rgba(8, 9, 12, 0.53) 0%,
       transparent 60%);
   pointer-events: none;
 }
