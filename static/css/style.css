@@ -480,11 +480,18 @@ button.hero-phone {
 }
 
 .phone-notch {
-  width: 80px;
+  width: 105px;
   height: 20px;
   background: #1a1a1a;
   border-radius: 0 0 12px 12px;
   flex-shrink: 0;
+}
+
+/* Call phone only: notch floats below top, rounded rectangle (Dynamic Island style) */
+.phone-frame.phone-call .phone-notch {
+  margin-top: 8px;
+  border-radius: 12px;
+  height: 24px;
 }
 
 .ios-icons svg {
