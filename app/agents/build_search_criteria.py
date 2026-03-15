@@ -45,11 +45,30 @@ def _get_llm():
 
 def _default_criteria() -> dict:
     return {
-        "location": "",
+        "location": {
+            "query": "",
+            "city": None,
+            "state_province": None,
+            "postal_code": None,
+            "neighborhood": None,
+        },
         "intent": "rent",
-        "price_max": "",
-        "beds_min": "",
-        "baths_min": "",
+        "price": {"min": None, "max": None},
+        "bedrooms": {"min": None, "max": None},
+        "bathrooms": {"min": None, "max": None},
+        "property_type": [],
+        "size": {
+            "sqft_min": None,
+            "sqft_max": None,
+            "lot_sqft_min": None,
+            "lot_sqft_max": None,
+        },
+        "year_built": {"min": None, "max": None},
+        "features": {"required": [], "nice_to_have": []},
+        "keywords": [],
+        "sort": {"field": "relevant", "direction": "desc"},
+        "page": 1,
+        "page_size": 20,
     }
 
 
@@ -123,7 +142,8 @@ def _call_openai_compatible(system_prompt: str, user_prompt: str) -> dict:
 def extract_search_criteria(transcript: str) -> dict:
     """
     Run the build-search-criteria agent on a transcript (Railtracks + GPT-OSS).
-    Returns a dict with location, intent, price_max, beds_min, baths_min.
+    Returns a structured dict with location, intent, price, bedrooms, bathrooms,
+    property_type, size, year_built, features, keywords, sort, and pagination.
     """
     from app.config import GPT_OSS_BASE_URL, GPT_OSS_MODEL
     if not GPT_OSS_BASE_URL or not GPT_OSS_MODEL:
