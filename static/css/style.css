@@ -539,7 +539,7 @@ button.hero-phone {
 
 /* ── Phone call screen (second phone) ───────────────── */
 .phone-frame.phone-call {
-  background: transparent;
+  background: linear-gradient(180deg, #2a2d28 0%, #1e2230 45%, #16182a 100%);
 }
 
 .phone-frame.phone-call .ios-status-bar,
@@ -553,7 +553,7 @@ button.hero-phone {
   flex-direction: column;
   align-items: center;
   padding: 24px 20px 16px;
-  background: linear-gradient(180deg, #2a2d28 0%, #1e2230 45%, #16182a 100%);
+  background: transparent;
   min-height: 0;
 }
 
