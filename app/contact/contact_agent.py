@@ -1,5 +1,6 @@
 """Zillow contact-agent flow: open listing, click inquiry CTA, fill form, optional submit. Demo-first, preview by default."""
 import logging
+import os
 import re
 import time
 from dataclasses import dataclass, field
@@ -18,6 +19,9 @@ DEFAULT_SLOW_MO_MS = 150
 PAGE_STABILITY_WAIT_S = 3
 WAIT_AFTER_CTA_MS = 2000
 PAUSE_BETWEEN_FIELDS_S = 1.0
+
+SCRAPERAPI_PROXY_HOST = "proxy-server.scraperapi.com"
+SCRAPERAPI_PROXY_PORT = 8001
 
 
 @dataclass
@@ -78,6 +82,18 @@ def _dismiss_overlays(page: Page, timeout_ms: int = 1500) -> None:
             pass
 
 
+def _build_proxy_config() -> dict | None:
+    """Build ScraperAPI proxy config if SCRAPER_API_KEY is set."""
+    api_key = os.environ.get("SCRAPER_API_KEY", "")
+    if not api_key:
+        return None
+    return {
+        "server": f"http://{SCRAPERAPI_PROXY_HOST}:{SCRAPERAPI_PROXY_PORT}",
+        "username": "scraperapi.country_code=us",
+        "password": api_key,
+    }
+
+
 def run_contact_flow(
     listing_url: str,
     lead: Lead,
@@ -85,23 +101,30 @@ def run_contact_flow(
     *,
     headless: bool = False,
     slow_mo_ms: int = DEFAULT_SLOW_MO_MS,
+    use_proxy: bool = True,
 ) -> ContactResult:
     """
     Open listing URL, click inquiry CTA, fill form. If mode == "preview" (default), do not submit.
-    Returns ContactResult with cta_found, form_found, fields_filled, submit_button_found, submitted.
-    On failure saves screenshot and HTML to data/output/contact_debug/.
-    Uses playwright-stealth to bypass bot detection (PerimeterX CAPTCHA).
+    If use_proxy=True and SCRAPER_API_KEY is set, routes traffic through ScraperAPI's rotating
+    proxies to avoid IP bans. Playwright still controls the browser visually.
     """
     result = ContactResult(cta_found=False, form_found=False, fields_filled={})
     if mode not in ("preview", "submit"):
         result.error = f"Invalid mode: {mode}"
         return result
 
+    proxy = _build_proxy_config() if use_proxy else None
+    if proxy:
+        LOG.info("Using ScraperAPI proxy for IP rotation")
+    else:
+        LOG.info("Running without proxy (set SCRAPER_API_KEY to enable)")
+
     stealth = Stealth()
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=headless, slow_mo=slow_mo_ms)
+        browser = p.chromium.launch(headless=headless, slow_mo=slow_mo_ms, proxy=proxy)
         context = browser.new_context(
             viewport={"width": 1280, "height": 900},
+            ignore_https_errors=True if proxy else False,
         )
         page = context.new_page()
         stealth.apply_stealth_sync(page)
