@@ -212,7 +212,6 @@ a {
 .hero-sub {
   font-family: var(--font);
   font-size: clamp(0.85rem, 3.8vw, 1.4rem);
-  white-space: nowrap;
   color: var(--text);
   line-height: 1.7;
   max-width: 600px;
@@ -1057,14 +1056,14 @@ footer {
     min-height: 100vh;
     min-height: 100svh;
     min-height: 100dvh;
-    padding: 100px 0 60px;
+    padding: 80px 0 48px;
   }
 
   .hero-grid {
     text-align: center;
-    min-height: calc(100vh - 160px);
-    min-height: calc(100svh - 160px);
-    min-height: calc(100dvh - 160px);
+    min-height: calc(100vh - 128px);
+    min-height: calc(100svh - 128px);
+    min-height: calc(100dvh - 128px);
     align-content: center;
   }
 
@@ -1081,7 +1080,7 @@ footer {
   }
 
   .hero-sub {
-    font-size: 1.2rem;
+    font-size: 1.05rem;
     margin-bottom: 32px;
     margin-left: auto;
     margin-right: auto;
@@ -1119,17 +1118,17 @@ footer {
   }
 
   .hero {
-    padding: 88px 0 48px;
+    padding: 60px 0 40px;
   }
 
   .hero-copy h1 {
-    font-size: 2.65rem;
+    font-size: 2.5rem;
     letter-spacing: -1.2px;
   }
 
   .hero-sub {
-    font-size: 1.1rem;
-    margin-bottom: 28px;
+    font-size: 0.95rem;
+    margin-bottom: 24px;
   }
 
   .hero .btn-primary {
