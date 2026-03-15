@@ -259,7 +259,14 @@ a {
 }
 
 .accent {
+<<<<<<< HEAD
   color: var(--green);
+=======
+  color: transparent;
+  background: linear-gradient(135deg, #317f60, #53ac88, #317f60);
+  -webkit-background-clip: text;
+  background-clip: text;
+>>>>>>> bc88905 (updating lin gradient)
 }
 
 .hero-sub {
