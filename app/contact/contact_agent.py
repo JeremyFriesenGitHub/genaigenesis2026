@@ -14,9 +14,10 @@ from .locators import find_form_root, find_submit_button, find_and_click_cta
 
 LOG = logging.getLogger(__name__)
 
-DEFAULT_SLOW_MO_MS = 80
-PAGE_STABILITY_WAIT_S = 2
-WAIT_AFTER_CTA_MS = 1500
+DEFAULT_SLOW_MO_MS = 150
+PAGE_STABILITY_WAIT_S = 3
+WAIT_AFTER_CTA_MS = 2000
+PAUSE_BETWEEN_FIELDS_S = 1.0
 
 
 @dataclass
