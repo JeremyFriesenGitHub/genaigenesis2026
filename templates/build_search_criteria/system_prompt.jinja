@@ -8,13 +8,69 @@ Important guidelines:
 - The caller's own statements are the primary source of truth for preferences.
 - Maya's recap or paraphrasing may contain speech-to-text errors (e.g. numbers garbled, words misheard). Cross-check Maya's summary against what the caller actually said and prefer the caller's words when they conflict.
 - The transcript may contain filler, off-topic remarks, or garbled text from automatic speech recognition. Ignore these and focus on concrete housing preferences.
-- If the caller states income instead of a budget, estimate a reasonable monthly rent (roughly 30% of gross monthly income) or leave price_max empty if you cannot estimate confidently.
+- If the caller states income instead of a budget, estimate a reasonable monthly rent (roughly 30% of gross monthly income) or leave price.max as null if you cannot estimate confidently.
+- Default intent to "rent" if ambiguous.
 
-Output valid JSON only, no markdown or extra text, with exactly these keys:
-- location (string): city, state, or area, e.g. "New Jersey", "Brooklyn NY"
-- intent (string): "rent" or "buy" (default to "rent" if ambiguous)
-- price_max (number or empty string): maximum monthly budget in dollars, e.g. 1000
-- beds_min (number or empty string): minimum bedrooms, e.g. 2
-- baths_min (number or empty string): minimum bathrooms, optional
+Output valid JSON only, no markdown or extra text. Use exactly this structure:
 
-If something is not mentioned, use empty string "" for strings and "" for numbers. Always include every key.
+{
+  "location": {
+    "query": "<free-text location as stated, e.g. 'New Jersey'>",
+    "city": "<city or null>",
+    "state_province": "<state or province or null>",
+    "postal_code": "<zip/postal code or null>",
+    "neighborhood": "<neighborhood or null>"
+  },
+  "intent": "rent or buy",
+  "price": {
+    "min": null,
+    "max": null
+  },
+  "bedrooms": {
+    "min": null,
+    "max": null
+  },
+  "bathrooms": {
+    "min": null,
+    "max": null
+  },
+  "property_type": [],
+  "size": {
+    "sqft_min": null,
+    "sqft_max": null,
+    "lot_sqft_min": null,
+    "lot_sqft_max": null
+  },
+  "year_built": {
+    "min": null,
+    "max": null
+  },
+  "features": {
+    "required": [],
+    "nice_to_have": []
+  },
+  "keywords": [],
+  "sort": {
+    "field": "relevant",
+    "direction": "desc"
+  },
+  "page": 1,
+  "page_size": 20
+}
+
+Field rules:
+- location.query: always fill with whatever location text the caller mentioned, even if you also populate city/state_province.
+- intent: "rent" or "buy".
+- price.min / price.max: numbers in dollars, or null if not mentioned.
+- bedrooms.min / bedrooms.max: integers, or null.
+- bathrooms.min / bathrooms.max: integers, or null.
+- property_type: array of zero or more from: "house", "condo", "townhouse", "apartment", "multi_family", "land".
+- size fields: numbers or null.
+- year_built: integers or null.
+- features.required: things the caller explicitly needs. Values from: "parking", "garage", "pool", "basement", "waterfront", "pet_friendly", "new_construction", "laundry", "ac", "near_schools", "near_transit".
+- features.nice_to_have: things mentioned as preferences but not hard requirements. Same value set.
+- keywords: array of free-text strings for anything not captured above.
+- sort: leave as {"field": "relevant", "direction": "desc"} unless the caller specifies a sort preference.
+- page / page_size: always 1 and 20.
+
+Use null (not empty string) for any numeric or object field that is not mentioned. Use empty array [] for list fields with no values. Always include every key.
