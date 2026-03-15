@@ -2,7 +2,7 @@
 
 [![Built at GenAI Genesis 2026](https://img.shields.io/badge/GenAI_Genesis-2026-blue)](#)
 
-**Agent<sup>2</sup>** is an AI-powered real estate agent that find you find your next home entirely via text message. No apps, no accounts, no forms. Just text us, tell us what you need, and get matched listings sent directly to your phone, and our agent will message the sellers on the listings you like!
+**Agent<sup>2</sup>** is an agentic real estate agent that finds your next home entirely via text message. No apps, no accounts, no forms. Just text us, tell us what you need, and get matched listings sent directly to your phone, and our agent will message the sellers on the listings you like!
 
 ## Features ✨
 
