@@ -378,8 +378,9 @@ a {
    ───────────────────────────────────────────────────── */
 .phone-frame {
   width: 100%;
-  max-width: 340px;
-  max-height: 520px;
+  max-width: 320px;
+  aspect-ratio: 9 / 17;
+  max-height: 585px;
   overflow: hidden;
   background: #f7f7f8;
   border-radius: 32px;
