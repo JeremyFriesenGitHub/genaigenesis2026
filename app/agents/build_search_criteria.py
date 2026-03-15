@@ -67,12 +67,17 @@ def _parse_response_json(text: str) -> dict:
         return _default_criteria()
 
 
-def _call_openai_compatible(system_prompt: str, user_prompt: str) -> dict:
-    from app.config import GPT_OSS_BASE_URL, GPT_OSS_MODEL
-    api_key = os.getenv("OPENAI_API_KEY", "")
+ENDPOINT_TIMEOUT_S = 10
+
+
+def _hit_endpoint(base_url: str, model: str, api_key: str,
+                   system_prompt: str, user_prompt: str,
+                   timeout: int = ENDPOINT_TIMEOUT_S) -> dict:
+    """Single attempt against one base_url. Raises on failure/timeout."""
+    import time
     payload = json.dumps(
         {
-            "model": GPT_OSS_MODEL,
+            "model": model,
             "temperature": 0,
             "messages": [
                 {"role": "system", "content": system_prompt},
@@ -81,7 +86,7 @@ def _call_openai_compatible(system_prompt: str, user_prompt: str) -> dict:
         }
     ).encode("utf-8")
     req = urllib.request.Request(
-        url=f"{GPT_OSS_BASE_URL.rstrip('/')}/chat/completions",
+        url=f"{base_url.rstrip('/')}/chat/completions",
         data=payload,
         headers={
             "Authorization": f"Bearer {api_key}",
@@ -89,10 +94,30 @@ def _call_openai_compatible(system_prompt: str, user_prompt: str) -> dict:
         },
         method="POST",
     )
-    with urllib.request.urlopen(req, timeout=120) as resp:
+    start = time.time()
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
         body = json.loads(resp.read().decode("utf-8"))
+    elapsed = time.time() - start
+    logging.info("Endpoint %s responded in %.2fs", base_url[:60], elapsed)
     text = body.get("choices", [{}])[0].get("message", {}).get("content", "")
     return _parse_response_json(text)
+
+
+def _call_openai_compatible(system_prompt: str, user_prompt: str) -> dict:
+    from app.config import GPT_OSS_BASE_URL, GPT_OSS_BASE_URL_FALLBACK, GPT_OSS_MODEL
+    api_key = os.getenv("OPENAI_API_KEY", "")
+    endpoints = [u for u in [GPT_OSS_BASE_URL, GPT_OSS_BASE_URL_FALLBACK] if u]
+    last_err = None
+    for i, base_url in enumerate(endpoints):
+        label = "primary" if i == 0 else "fallback"
+        try:
+            logging.info("Trying %s endpoint: %s", label, base_url[:60])
+            return _hit_endpoint(base_url, GPT_OSS_MODEL, api_key,
+                                  system_prompt, user_prompt)
+        except Exception as e:
+            last_err = e
+            logging.warning("%s endpoint failed (%s), trying next...", label, e)
+    raise RuntimeError(f"All HF endpoints failed. Last error: {last_err}")
 
 
 def extract_search_criteria(transcript: str) -> dict:
