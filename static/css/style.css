@@ -211,10 +211,11 @@ a {
 
 .hero-sub {
   font-family: var(--font);
-  font-size: 1.4rem;
+  font-size: clamp(0.85rem, 3.8vw, 1.4rem);
+  white-space: nowrap;
   color: var(--text);
   line-height: 1.7;
-  max-width: 520px;
+  max-width: 600px;
   margin-bottom: 40px;
 }
 
@@ -675,6 +676,14 @@ button.hero-phone {
 .how-header,
 .features-header {
   margin-bottom: 64px;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .how-header,
+  .features-header {
+    text-align: left;
+  }
 }
 
 .eyebrow {
@@ -707,6 +716,16 @@ button.hero-phone {
   color: var(--green);
   text-decoration: underline;
   text-underline-offset: 0.2em;
+}
+
+.mobile-break {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .mobile-break {
+    display: none;
+  }
 }
 
 /* How it works: three phones (same as hero) */
