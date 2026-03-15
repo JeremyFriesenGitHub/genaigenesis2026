@@ -11,13 +11,27 @@ ZILLOW_JSON = OUTPUT_DIR / "zillow.json"
 
 
 def main():
-    criteria = {
-        "location": "New York NY",
-        "intent": "rent",
-        "price_max": 3000,
-        "beds_min": 1,
-    }
-    print("Opening browser. Solve CAPTCHA if shown, then press Enter.\n")
+    from pathlib import Path as _P
+    _root = _P(__file__).resolve().parent.parent.parent
+    _transcript = _root / "trans.txt"
+
+    if _transcript.exists():
+        from app.agents.build_search_criteria import extract_search_criteria
+        print("Extracting search criteria from transcript...")
+        criteria = extract_search_criteria(_transcript.read_text(encoding="utf-8"))
+        print(f"Criteria: {json.dumps(criteria, indent=2)}\n")
+    else:
+        criteria = {
+            "location": {"query": "New York NY", "city": "New York", "state_province": "NY"},
+            "intent": "rent",
+            "price": {"min": None, "max": 3000},
+            "bedrooms": {"min": 1, "max": None},
+            "bathrooms": {"min": None, "max": None},
+            "property_type": [],
+            "features": {"required": [], "nice_to_have": []},
+        }
+
+    print("Fetching listings via ScraperAPI...\n")
     data = search(criteria)
     listings = data["listings"]
     links = data["listing_links"]
