@@ -623,6 +623,10 @@ button.hero-phone {
   padding: 160px 0 120px;
 }
 
+.how .container {
+  max-width: 1200px;
+}
+
 .how-header,
 .features-header {
   margin-bottom: 64px;
@@ -671,8 +675,11 @@ button.hero-phone {
 @media (min-width: 768px) {
   .how-phones-grid {
     grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
+    gap: 48px;
     align-items: start;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 
