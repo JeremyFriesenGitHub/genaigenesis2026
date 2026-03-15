@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+telnyx
+python-dotenv
+python-multipart
+httpx
+websockets
+sphn
+numpy
+noisereduce
