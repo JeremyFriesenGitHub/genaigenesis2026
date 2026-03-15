@@ -738,11 +738,15 @@ button.hero-phone {
    HOW IT WORKS
    ───────────────────────────────────────────────────── */
 .how {
-  padding: 160px 0 120px;
+  padding: 80px 0 64px;
 }
 
 .how .container {
   max-width: 1200px;
+}
+
+.how .how-header {
+  margin-bottom: 40px;
 }
 
 .how-header,
@@ -785,19 +789,30 @@ button.hero-phone {
 /* How it works: three phones (same as hero) */
 .how-phones-grid {
   display: grid;
-  gap: 32px;
+  gap: 28px;
   grid-template-columns: 1fr;
   justify-items: center;
+}
+
+/* Phones in how section — room to be bigger with one-line header */
+.how-phones-grid .phone-frame {
+  max-width: 300px;
+  max-height: 560px;
 }
 
 @media (min-width: 768px) {
   .how-phones-grid {
     grid-template-columns: repeat(3, 1fr);
-    gap: 48px;
+    gap: 36px;
     align-items: start;
     max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
+  }
+
+  .how-phones-grid .phone-frame {
+    max-width: 300px;
+    max-height: 565px;
   }
 }
 
