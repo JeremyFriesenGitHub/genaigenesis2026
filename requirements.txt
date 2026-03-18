@@ -14,3 +14,5 @@ openai
 jinja2
 audioop-lts; python_version >= "3.13"
 numpy
+twilio>=9.0.0
+boto3>=1.34.0
