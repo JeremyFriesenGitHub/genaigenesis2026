@@ -1,4 +1,4 @@
-"""Records call audio and transcribes after the call ends."""
+"""Records call audio and transcribes after the call ends. Uploads to S3."""
 
 import asyncio
 import io
@@ -6,14 +6,10 @@ import logging
 import os
 import time
 import wave
-from pathlib import Path
 
 import numpy as np
 
 logger = logging.getLogger(__name__)
-
-RECORDINGS_DIR = Path(os.environ.get("RECORDINGS_DIR", "/tmp/recordings"))
-RECORDINGS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 class CallRecorder:
@@ -57,7 +53,7 @@ class CallRecorder:
         return buf.getvalue()
 
     def save_and_transcribe(self) -> None:
-        """Save WAV and transcribe in a background thread."""
+        """Save WAV and transcribe in a background thread, then upload to S3."""
         if not self._user_chunks and not self._agent_chunks:
             logger.info("No audio recorded for call %s", self.call_id)
             return
@@ -66,21 +62,40 @@ class CallRecorder:
     def _save_and_transcribe_sync(self) -> None:
         try:
             wav_data = self._merge_to_wav()
-            wav_path = RECORDINGS_DIR / f"{self.call_id}.wav"
-            wav_path.write_bytes(wav_data)
             duration = len(wav_data) / (self.sample_rate * 2)
-            logger.info("Saved recording: %s (%.1fs)", wav_path, duration)
+            logger.info("Merged recording for %s (%.1fs)", self.call_id, duration)
 
-            # Transcribe with faster-whisper
+            # Transcribe with faster-whisper (in-memory)
+            import tempfile
             from faster_whisper import WhisperModel
 
-            model = WhisperModel("base", device="cpu", compute_type="int8")
-            segments, _ = model.transcribe(str(wav_path))
-            transcript = " ".join(seg.text.strip() for seg in segments)
+            with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
+                tmp.write(wav_data)
+                tmp_path = tmp.name
 
-            transcript_path = RECORDINGS_DIR / f"{self.call_id}.txt"
-            transcript_path.write_text(transcript)
-            logger.info("Transcript saved: %s", transcript_path)
-            logger.info("Transcript: %s", transcript)
+            model = WhisperModel("base", device="cpu", compute_type="int8")
+            segments, _ = model.transcribe(tmp_path)
+            transcript = " ".join(seg.text.strip() for seg in segments)
+            os.unlink(tmp_path)
+
+            logger.info("Transcript for %s: %s", self.call_id, transcript)
+
+            # Upload WAV and transcript to S3
+            import boto3
+            bucket = os.environ.get("S3_BUCKET", "personaplex-recordings")
+            s3 = boto3.client("s3")
+
+            s3.put_object(
+                Bucket=bucket,
+                Key=f"recordings/{self.call_id}.wav",
+                Body=wav_data,
+            )
+            s3.put_object(
+                Bucket=bucket,
+                Key=f"transcripts/{self.call_id}.txt",
+                Body=transcript.encode(),
+            )
+            logger.info("Uploaded WAV and transcript to S3 for %s", self.call_id)
+
         except Exception:
             logger.exception("Failed to save/transcribe call %s", self.call_id)

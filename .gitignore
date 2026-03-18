@@ -10,3 +10,8 @@ venv
 data/output/*.json
 data/output/*.html
 output/
+
+package/
+lambda.zip
+*.pyc
+__pycache__/

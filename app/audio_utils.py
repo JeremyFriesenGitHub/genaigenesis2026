@@ -179,11 +179,13 @@ class EchoCanceller:
 
 
 def decode_twilio_media(payload_b64: str) -> bytes:
-    return base64.b64decode(payload_b64)
+    """Decode Twilio mulaw payload: base64 decode then mulaw → PCM16."""
+    return mulaw_to_pcm16(base64.b64decode(payload_b64))
 
 
-def encode_twilio_media(raw_bytes: bytes) -> str:
-    return base64.b64encode(raw_bytes).decode("ascii")
+def encode_twilio_media(pcm_bytes: bytes) -> str:
+    """Encode PCM16 for Twilio: PCM16 → mulaw then base64 encode."""
+    return base64.b64encode(pcm16_to_mulaw(pcm_bytes)).decode("ascii")
 
 
 # Telnyx L16 helpers — L16 is raw PCM16, just base64 encoded

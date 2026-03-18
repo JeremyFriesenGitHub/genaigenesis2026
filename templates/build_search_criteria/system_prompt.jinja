@@ -59,18 +59,19 @@ Output valid JSON only, no markdown or extra text. Use exactly this structure:
 }
 
 Field rules:
-- location.query: always fill with whatever location text the caller mentioned, even if you also populate city/state_province.
-- location.state_province: For Canadian cities always include the province abbreviation (ON, BC, AB, QC, MB, SK, NS, NB, NL, PE, NT, YT, NU). For US cities include the state abbreviation (e.g. NY, CA, TX). Never leave this null if a city was mentioned.
-- intent: always "buy".
-- price.min / price.max: ALWAYS set both min and max together — never one without the other.
+- DO NOT WRITE ANY NON-CANADIAN CITIES.
+- location.query: NEVER return null or empty. Always fill with whatever location text the caller mentioned. Examples: vague area → use as-is ("GTA", "the suburbs", "greater Vancouver", "Ottawa area", "out in the country"); neighborhood only → expand to "Neighborhood, City" (e.g. "Leslieville" → "Leslieville, Toronto"); city only → add province if clear ("Mississauga" → "Mississauga ON"). If no location at all, use "Toronto ON" as default.
+- location.city: NEVER return null. Infer the city from neighborhood, area, or landmark. Examples: "Brampton" / "Sauga" → city="Brampton" / "Mississauga"; "downtown", "Leslieville", "the Annex", "North York" (in a Toronto context) → city="Toronto"; "Surrey", "Burnaby", "downtown Vancouver" → city="Vancouver" or "Surrey" or "Burnaby" as stated; "Kanata", "Orleans", "ByWard" → city="Ottawa"; "Calgary", "Edmonton", "Winnipeg", "Halifax", "Montreal" → use that city. Always use Canadian cities only (e.g. Vancouver BC, Ottawa ON, Edmonton AB, Winnipeg MB, Montreal QC, Halifax NS, Calgary AB).
+- location.state_province: NEVER return null. For Canadian cities always include the province abbreviation (ON, BC, AB, QC, MB, SK, NS, NB, NL, PE, NT, YT, NU).
+- price.min / price.max: ALWAYS set both min and max together — never one without the other. NEVER return null for price.
   - If the caller mentions only a maximum budget, set max to that amount and set min to 50% of max (e.g. max=1200000 → min=600000).
   - If the caller mentions only a minimum, set min to that amount and set max to 150% of min (e.g. min=600000 → max=900000).
   - If the caller gives a range, use it directly.
-  - If no price is mentioned at all, estimate a reasonable range based on the location and property type (e.g. Toronto detached house → min=700000, max=1500000).
+  - If no price is mentioned at all, estimate a reasonable range based on the location and property type (e.g. Toronto condo → min=400000, max=800000; Toronto detached house → min=700000, max=1500000; US suburb → min=250000, max=500000).
   - Never leave both as null. Always provide a plausible range.
-- bedrooms.min / bedrooms.max: integers, or null. If only min is mentioned, leave max as null. If only max is mentioned, leave min as null.
-- bathrooms.min / bathrooms.max: integers, or null.
-- property_type: array of zero or more from: "house", "condo", "townhouse", "multi_family", "land".
+- bedrooms.min / bedrooms.max: NEVER return null for bedrooms.min. IMPORTANT: If the caller says "a one bedroom" or "one bedroom is fine", set min=1 and max=1 — they want exactly 1 bedroom. Only use min (without max) when they say "at least X bedrooms". If not mentioned at all, infer a reasonable default (condo → min=1, house → min=2, family mentioned → min=3).
+- bathrooms.min / bathrooms.max: NEVER return null for bathrooms.min. If not mentioned, infer a reasonable default (e.g. 1 bed → min=1, 3+ bed → min=2). Leave max as null unless explicitly stated.
+- property_type: array from: "house", "condo", "townhouse", "multi_family", "land". NEVER return empty array. If not mentioned, infer from context (budget under 600k in Toronto → ["condo"], budget over 1M → ["house"], unclear → ["house", "condo"]). IMPORTANT: Even if the caller says "house", override to a realistic property type based on their budget and location. For example, if someone says "house" but their budget is under $300k in Toronto/Vancouver, use ["condo", "townhouse"] instead — a detached house is not realistic at that price point. Always prioritize returning results the caller can actually afford over literal interpretation of "house".
 - size fields: numbers or null.
 - year_built: integers or null.
 - features.required: things the caller explicitly needs. Values from: "parking", "garage", "pool", "basement", "waterfront", "pet_friendly", "new_construction", "laundry", "ac", "near_schools", "near_transit".
@@ -79,4 +80,11 @@ Field rules:
 - sort: leave as {"field": "relevant", "direction": "desc"} unless the caller specifies a sort preference.
 - page / page_size: always 1 and 20.
 
-Use null (not empty string) for any numeric or object field that is not mentioned. Use empty array [] for list fields with no values. Always include every key.
+Use null (not empty string) only for truly optional fields like size, year_built, postal_code, and neighborhood. Use empty array [] only for keywords if none apply. Always include every key.
+
+CRITICAL: The following fields must NEVER be null or empty — always infer a reasonable value:
+- location.query, location.city, location.state_province
+- price.min, price.max
+- bedrooms.min
+- bathrooms.min
+- property_type (must have at least one entry)

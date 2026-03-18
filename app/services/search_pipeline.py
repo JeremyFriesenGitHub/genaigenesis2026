@@ -7,34 +7,11 @@ import httpx
 
 from app.agents.build_search_criteria import extract_search_criteria
 from data.zillow import search
-from app.services.telnyx_sms import send_sms
-from app.config import GPT_OSS_BASE_URL, GPT_OSS_MODEL
+from app.services.twilio_sms import send_sms
+from app.config import GPT_OSS_BASE_URL, GPT_OSS_MODEL, OPENAI_API_KEY
 
 logger = logging.getLogger(__name__)
 
-
-def _sync_to_ec2(phone: str, session: dict) -> None:
-    """Push session state back to EC2 so its SMS handler stays in sync."""
-    import os
-    ec2_url = os.environ.get("APP_BASE_URL", "")
-    if not ec2_url:
-        return
-    try:
-        httpx.post(
-            f"{ec2_url}/session/sync",
-            json={
-                "phone": phone,
-                "state": session.get("state"),
-                "current_property": session.get("current_property"),
-                "criteria": session.get("criteria"),
-                "rejection_reasons": session.get("rejection_reasons"),
-                "page": session.get("page"),
-            },
-            timeout=10.0,
-        )
-        logger.info("Session synced to EC2 for %s (state=%s)", phone, session.get("state"))
-    except Exception:
-        logger.exception("Failed to sync session to EC2 for %s", phone)
 
 
 def _normalize_criteria(raw: dict) -> dict:
@@ -62,11 +39,9 @@ def _normalize_criteria(raw: dict) -> dict:
 
 
 async def run_search(phone: str, transcript_path: str | None = None, transcript: str | None = None) -> None:
-    from app.routers.sms import sessions
+    from app.services.dynamodb_sessions import get_session, put_session
 
-    session = sessions.get(phone)
-    if not session:
-        return
+    session = get_session(phone)
 
     # Step 1: Extract criteria from transcript (first call only)
     transcript_text = transcript or (open(transcript_path).read() if transcript_path else None)
@@ -79,17 +54,18 @@ async def run_search(phone: str, transcript_path: str | None = None, transcript:
             logger.exception("Failed to extract criteria for %s", phone)
             send_sms(phone, "Sorry, I had trouble understanding the call. Could you text me what you're looking for?")
             session["state"] = "new"
-            _sync_to_ec2(phone, session)
+            put_session(phone, session)
             return
 
     criteria = session.get("criteria")
     if not criteria:
         send_sms(phone, "I don't have your search criteria yet. Let me call you!")
         session["state"] = "new"
+        put_session(phone, session)
         return
 
     # Step 2: Search Zillow with current page
-    criteria_with_page = {**criteria, "page": session["page"]}
+    criteria_with_page = {**criteria, "page": session.get("page", 1)}
     try:
         results = search(criteria_with_page)
     except Exception:
@@ -101,18 +77,18 @@ async def run_search(phone: str, transcript_path: str | None = None, transcript:
     listings = ranked.get("matches", []) or ranked.get("nearest", [])
 
     # Deduplicate — never send a listing the user already saw
-    seen = set(session.get("seen_urls", []))
+    seen = set(session.get("seen_urls") or [])
     listings = [l for l in listings if l.get("url", "") not in seen]
 
     if not listings:
         send_sms(phone, "I've exhausted the listings I can find matching your criteria. Want to adjust what you're looking for?")
         session["state"] = "new"
-        _sync_to_ec2(phone, session)
+        put_session(phone, session)
         return
 
     # Step 3: LLM picks best property
     top = listings[:5]
-    chosen = _llm_pick(top, criteria, session["rejection_reasons"])
+    chosen = _llm_pick(top, criteria, session.get("rejection_reasons") or [])
 
     if not chosen:
         chosen = top[0]  # fallback to top score
@@ -122,17 +98,18 @@ async def run_search(phone: str, transcript_path: str | None = None, transcript:
     session["state"] = "awaiting_property_feedback"
 
     url = chosen.get("url", "No URL")
-    session.setdefault("seen_urls", []).append(url)
+    seen_urls = list(session.get("seen_urls") or [])
+    seen_urls.append(url)
+    session["seen_urls"] = seen_urls
     price = chosen.get("price", "")
     address = chosen.get("address", "") or chosen.get("title", "")
     beds = chosen.get("beds", "")
     baths = chosen.get("baths", "")
 
-    send_sms(phone, f"🏠 {address}\n{beds} bed · {baths} bath · {price}\n{url}")
-    send_sms(phone, "Do you like this one?")
+    put_session(phone, session)
 
-    # Sync state back to EC2 so it knows we're awaiting feedback
-    _sync_to_ec2(phone, session)
+    send_sms(phone, f"🏠 {address}\n{beds} bed · {baths} bath · {price}\n{url}")
+    send_sms(phone, "What do you think?\nReply 1 if you like it\nReply 2 to see something else")
 
 
 def _llm_pick(listings: list[dict], criteria: dict, rejection_reasons: list[str]) -> dict | None:
@@ -161,13 +138,15 @@ def _llm_pick(listings: list[dict], criteria: dict, rejection_reasons: list[str]
     try:
         resp = httpx.post(
             f"{GPT_OSS_BASE_URL}/chat/completions",
-            headers={"Authorization": "Bearer test", "Content-Type": "application/json"},
+            headers={"Authorization": f"Bearer {OPENAI_API_KEY}", "Content-Type": "application/json"},
             json={"model": GPT_OSS_MODEL, "messages": [{"role": "user", "content": prompt}],
                   "max_tokens": 50, "temperature": 0.0},
             timeout=30.0,
         )
         resp.raise_for_status()
-        content = resp.json()["choices"][0]["message"]["content"] or ""
+        content = resp.json()["choices"][0]["message"]["content"]
+        if not content:
+            return None
         # Extract JSON if wrapped in markdown
         if "```" in content:
             content = content.split("```")[1].strip().lstrip("json").strip()

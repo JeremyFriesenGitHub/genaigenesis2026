@@ -1,0 +1,12 @@
+[Unit]
+Description=PersonaPlex Voice Bridge
+After=network.target docker.service
+
+[Service]
+WorkingDirectory=/home/ubuntu/genaigenesis2026
+EnvironmentFile=/home/ubuntu/.env
+ExecStart=/usr/local/bin/uvicorn app.voice_bridge:app --host 0.0.0.0 --port 8001 --ssl-keyfile /etc/ssl/private/voice.key --ssl-certfile /etc/ssl/certs/voice.crt
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

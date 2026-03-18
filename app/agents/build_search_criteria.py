@@ -86,7 +86,7 @@ def _parse_response_json(text: str) -> dict:
         return _default_criteria()
 
 
-ENDPOINT_TIMEOUT_S = 10
+ENDPOINT_TIMEOUT_S = 30
 
 
 def _hit_endpoint(base_url: str, model: str, api_key: str,
@@ -136,7 +136,7 @@ def _call_openai_compatible(system_prompt: str, user_prompt: str) -> dict:
         except Exception as e:
             last_err = e
             logging.warning("%s endpoint failed (%s), trying next...", label, e)
-    raise RuntimeError(f"All HF endpoints failed. Last error: {last_err}")
+    raise RuntimeError(f"All endpoints failed. Last error: {last_err}")
 
 
 def extract_search_criteria(transcript: str) -> dict:
